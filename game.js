@@ -136,6 +136,9 @@ let gameState = {
         target: 'ground',
         attack: function(scene,troop){
             troop.target.health -= gameState.humanTankStats.damage;
+            if(Phaser.Math.Distance.BetweenPoints(troop, troop.target)<gameState.humanTankStats.explodeRadius){
+                troop.health -= gameState.humanTankStats.areaDamage;
+            }
             gameState.createExplosion(scene,troop.target.x,troop.target.y);
             for (var i = 0; i < gameState.troops.getChildren().length; i++){ 
                 dist = Phaser.Math.Distance.BetweenPoints(gameState.troops.getChildren()[i], troop.target);
@@ -144,6 +147,23 @@ let gameState = {
                 }
             }
         }
+    },
+    humanMechStats:{
+        name: 'Human Mech',
+        description: 'Moderate ground unit equipped with twin auto machine guns.',
+        sprite: 'humanMech',
+        cost: 125,
+        health: 100,
+        speed: 80,
+        range: 175,
+        damage: 7,
+        fireRate: 200,
+        type: 'ground',
+        target: 'ground&air',
+        attack: function(scene,troop){
+            troop.target.health -= gameState.humanMechStats.damage;
+        }
+        
     },
     
     

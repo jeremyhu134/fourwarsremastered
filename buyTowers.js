@@ -56,6 +56,16 @@ class BuyTroopScene extends Phaser.Scene {
         humanTank.on('pointerdown', () => {
             gameState.createTroop(gameState.arena,gameState.humanTankStats,0);
 		});
+        
+        //Human Mech
+        var humanMech = this.add.image(170,585,'humanMech').setOrigin(0,0).setInteractive()
+        humanMech.setScale(50/humanMech.height);
+        humanMech.on('pointerover', () => {
+            nameAndCost.setText(`${gameState.humanMechStats.name} $${gameState.humanMechStats.cost}`);
+		});
+        humanMech.on('pointerdown', () => {
+            gameState.createTroop(gameState.arena,gameState.humanMechStats,0);
+		});
 	}
     update(){
         

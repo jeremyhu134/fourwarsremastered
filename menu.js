@@ -16,12 +16,15 @@ class MenuScene extends Phaser.Scene {
         this.load.image('bullet1','images/bullet1.png');
         
         //Human Troops
-            //human trooper
+            //human Trooper
             this.load.spritesheet('humanTrooper','images/humanTrooper.png',{frameWidth: 50,frameHeight:50});
             this.load.spritesheet('humanTrooperGreen','images/humanTrooperGreen.png',{frameWidth: 50,frameHeight:50});
-            //human tank
+            //human Tank
             this.load.spritesheet('humanTank','images/humanTank.png',{frameWidth: 70,frameHeight:70});
             this.load.spritesheet('humanTankGreen','images/humanTankGreen.png',{frameWidth: 70,frameHeight:70});
+            //human Mech
+            this.load.spritesheet('humanMech','images/humanMech.png',{frameWidth: 60,frameHeight:60});
+            this.load.spritesheet('humanMechGreen','images/humanMechGreen.png',{frameWidth: 60,frameHeight:60});
         
         //Buy Towers Stuff
         this.load.image('buyTowersBar','images/buyTowersBar.png');
@@ -122,6 +125,43 @@ class MenuScene extends Phaser.Scene {
                     key: 'humanTankGreenDeath',
                     frameRate: 5,
                     frames:this.anims.generateFrameNames('humanTankGreen',{start: 0,end: 0})
+                });
+            //Human Mech
+            //Blue
+                this.anims.create({
+                    key: 'humanMechMove',
+                    frameRate: 8,
+                    repeat: -1,
+                    frames:this.anims.generateFrameNames('humanMech',{start: 0,end: 7})
+                });
+                this.anims.create({
+                    key: 'humanMechAttack',
+                    frameRate: 10,
+                    repeat: -1,
+                    frames:this.anims.generateFrameNames('humanMech',{start: 8,end: 9})
+                });
+                this.anims.create({
+                    key: 'humanMechDeath',
+                    frameRate: 5,
+                    frames:this.anims.generateFrameNames('humanMech',{start: 0,end: 0})
+                });
+            //Green
+                this.anims.create({
+                    key: 'humanMechGreenMove',
+                    frameRate: 8,
+                    repeat: -1,
+                    frames:this.anims.generateFrameNames('humanMechGreen',{start: 0,end: 7})
+                });
+                this.anims.create({
+                    key: 'humanMechGreenAttack',
+                    frameRate: 10,
+                    repeat: -1,
+                    frames:this.anims.generateFrameNames('humanMechGreen',{start: 8,end: 9})
+                });
+                this.anims.create({
+                    key: 'humanMechGreenDeath',
+                    frameRate: 5,
+                    frames:this.anims.generateFrameNames('humanMechGreen',{start: 0,end: 0})
                 });
             
         

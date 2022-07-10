@@ -56,21 +56,22 @@ class ArenaScene extends Phaser.Scene {
         this.time.addEvent({
             delay: 5000,
             callback: ()=>{
-                gameState.createTroop(this,gameState.humanTankStats,1);
+                gameState.createTroop(this,gameState.humanMechStats,1);
             },  
             startAt: 0,
             timeScale: 1,
             repeat: -1
         }); 
         this.time.addEvent({
-            delay: 1000,
+            delay: 10000,
             callback: ()=>{
-                gameState.createTroop(this,gameState.humanTrooperStats,0);
+                gameState.createTroop(this,gameState.humanTankStats,1);
             },  
             startAt: 0,
             timeScale: 1,
             repeat: -1
-        });
+        }); 
+       
         
         
         gameState.camera.x = 0;
