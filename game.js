@@ -25,83 +25,12 @@ const config = {
 const game = new Phaser.Game(config);
 
 let gameState = {
-    
-    /*createGeneralRooks : function(scene,x,y){
-        gameState.character = scene.physics.add.sprite(x,y,'generalRooks').setInteractive().setDepth(1);
-        gameState.character.setCollideWorldBounds(true);
-        gameState.character.body.width = 30;
-        gameState.character.body.offset.x = 30;
-        gameState.character.body.height = 50;
-        gameState.character.body.offset.y = 10;
-        gameState.character.anims.play('generalRooksIdle',true);
-        
-        //Attributes
-        gameState.character.health = gameState.generalRooksStats.health;
-        
-        gameState.createHealthBar(scene,gameState.character,gameState.generalRooksStats.health);
-        //stats
-        var health = gameState.generalRooksStats.health;
-        var selected = false;
-        var moving = false;
-        var selectCircle;
-        var select = gameState.character.on('pointerdown', function (pointer) {
-            if(selected == false){
-                selectCircle = scene.add.image(0,0,'selectedCircle').setScale((gameState.character.body.width+10)/80).setDepth(0);
-                selected = true;
-            }else {
-                selectCircle.destroy();
-                selected = false;
-            }
-        });
-        var movement = gameState.input.on('pointerdown', function (pointer) {
-            if(selected == true){
-                scene.physics.moveTo(gameState.character,gameState.input.x, gameState.input.y,gameState.generalRooksStats.speed);
-                gameState.character.anims.play('generalRooksMove',true);
-                if(gameState.character.x > gameState.input.x){
-                    gameState.character.flipX = true;
-                }else {
-                    gameState.character.flipX = false;
-                }
-                var dist = Phaser.Math.Distance.BetweenPoints(gameState.character, gameState.input);
-                if(gameState.heroMoveTimer){
-                    gameState.heroMoveTimer.destroy();
-                }
-                gameState.heroMoveTimer = scene.time.addEvent({
-                    delay: (dist/gameState.generalRooksStats.speed)*1000,
-                    callback: ()=>{
-                        gameState.character.anims.play('generalRooksIdle',true);
-                        gameState.character.setVelocityX(0);
-                        gameState.character.setVelocityY(0);
-                    },  
-                    startAt: 0,
-                    timeScale: 1
-                });
-            }
-        });
-        var behaviorLoop = scene.time.addEvent({
-            delay: 1,
-            callback: ()=>{
-                gameState.character.depth = gameState.character.y;
-                if(selectCircle){
-                    if(gameState.keys.ESC.isDown){
-                        selectCircle.destroy();
-                        selected = false;
-                    }
-                    selectCircle.x = gameState.character.x;
-                    selectCircle.y = gameState.character.y+(gameState.character.body.height/2);
-                }
-            },  
-            startAt: 0,
-            timeScale: 1,
-            repeat: -1
-        });
-    },
-    */
-    //Create castle
     gameWindow:{
         width: 1300,
         height: 650
     },
+    
+    money: 100,
     
     humanTrooperStats:{
         name: 'Human Trooper',
@@ -114,38 +43,73 @@ let gameState = {
         damage: 5,
         fireRate: 200,
         type: 'ground',
+        armour: false,
         target: 'ground&air',
         attack: function(scene,troop){
             troop.target.health -= gameState.humanTrooperStats.damage;
+        },
+        death: function(scene,troop){
+            troop.destroy();
         }
-        
+    },
+    humanSniperStats:{
+        name: 'Human Sniper',
+        description: 'Long ranged ground unit equipped with a powerful rifle.',
+        sprite: 'humanSniper',
+        cost: 100,
+        health: 40,
+        speed: 90,
+        range: 600,
+        damage: 60,
+        armourDamage: 20,
+        fireRate: 5500,
+        width: 50,
+        height: 50,
+        type: 'ground',
+        armour: false,
+        target: 'ground&air',
+        attack: function(scene,troop){
+            if(troop.target.armour == true){
+                troop.target.health -= gameState.humanSniperStats.armourDamage;
+            }else {
+                troop.target.health -= gameState.humanSniperStats.damage;
+            }
+        },
+        death: function(scene,troop){
+            troop.destroy();
+        }
     },
     humanTankStats:{
         name: 'Human Tank',
         description: 'Heavy ground unit with a devestating cannon that deals massive area damage.',
         sprite: 'humanTank',
-        cost: 150,
+        cost: 175,
         health: 200,
         speed: 50,
-        range: 350,
-        damage: 70,
+        range: 325,
+        damage: 30,
         areaDamage: 40,
-        explodeRadius: 100,
+        explodeRadius: 60,
         fireRate: 3000,
         type: 'ground',
+        armour: true,
         target: 'ground',
         attack: function(scene,troop){
             troop.target.health -= gameState.humanTankStats.damage;
             if(Phaser.Math.Distance.BetweenPoints(troop, troop.target)<gameState.humanTankStats.explodeRadius){
                 troop.health -= gameState.humanTankStats.areaDamage;
             }
-            gameState.createExplosion(scene,troop.target.x,troop.target.y);
+            gameState.createExplosion(scene,troop.target.x,troop.target.y,1.5);
             for (var i = 0; i < gameState.troops.getChildren().length; i++){ 
                 dist = Phaser.Math.Distance.BetweenPoints(gameState.troops.getChildren()[i], troop.target);
                 if(dist<gameState.humanTankStats.explodeRadius && gameState.troops.getChildren()[i].team != troop.team){
                     gameState.troops.getChildren()[i].health -= gameState.humanTankStats.areaDamage;
                 }
             }
+        },
+        death: function(scene,troop){
+            gameState.createExplosion(scene,troop.x,troop.y,1.1);
+            troop.destroy();
         }
     },
     humanMechStats:{
@@ -157,13 +121,17 @@ let gameState = {
         speed: 80,
         range: 175,
         damage: 7,
-        fireRate: 200,
+        fireRate: 150,
         type: 'ground',
+        armour: true,
         target: 'ground&air',
         attack: function(scene,troop){
             troop.target.health -= gameState.humanMechStats.damage;
+        },
+        death: function(scene,troop){
+            gameState.createExplosion(scene,troop.x,troop.y,1);
+            troop.destroy();
         }
-        
     },
     
     
@@ -192,14 +160,74 @@ let gameState = {
     },
     
     
+    createMap: function(scene, race1, race2, environment, length){
+        game.scale.resize(length, 650);
+        var base;
+        var enemyBase;
+        if(race1 == 'human'){
+            var base = gameState.troops.create(100,650/2, `humanHq`).setImmovable().setDepth(10000);
+            base.anims.play('humanHqMove');
+            
+        }
+        if(race2 == 'human'){
+            var enemyBase = gameState.troops.create(gameState.mapWidth-100,650/2, `humanHqGreen`).setImmovable().setDepth(10000);
+            enemyBase.anims.play('humanHqGreenMove');
+        }
+        
+        base.team = 0;
+        base.health = 5000;
+        gameState.createHealthBar(scene,base,5000);
+        base.type = 'building';
+        base.depth = 4;
+        var baseLoop = scene.time.addEvent({
+            delay: 1,
+            callback: ()=>{
+                if(base.health <= 0){
+                    baseLoop.destroy();
+                    base.destroy();
+                    scene.scene.pause("ArenaScene");
+                }
+            },  
+            startAt: 0,
+            timeScale: 1,
+            repeat: -1
+        }); 
+        
+        enemyBase.setRotation(Phaser.Math.Angle.Between(enemyBase.x,enemyBase.y,enemyBase.x-1,enemyBase.y)); 
+        enemyBase.team = 1;
+        enemyBase.health = 5000;
+        gameState.createHealthBar(scene,enemyBase,5000);
+        enemyBase.type = 'building';
+        enemyBase.depth = 4;
+        var enemyBaseLoop = scene.time.addEvent({
+            delay: 1,
+            callback: ()=>{
+                if(enemyBase.health <= 0){
+                    enemyBaseLoop.destroy();
+                    enemyBase.destroy();
+                    scene.scene.pause("ArenaScene");
+                }
+            },  
+            startAt: 0,
+            timeScale: 1,
+            repeat: -1
+        });
+    },
+    
+    
     createTroop: function(scene,troopStats,team){
         var troop = gameState.troops.create(-100,Math.ceil(Math.random()*window.innerHeight), `${troopStats.sprite}`);
+        /*var rand = Math.ceil(Math.random()*2);
+        if(rand == 1){
+            troop.y = Math.ceil(Math.random()*(window.innerHeight/2-100));
+        }else {
+            troop.y = (window.innerHeight/2+100) + Math.ceil(Math.random()*(window.innerHeight/2-100));
+        }*/
+        
         var color = '';
         if(team == 1){
             color = 'Green';
         }
-        //troop.setCollideWorldBounds(true);
-        scene.physics.add.collider(troop, gameState.troops);
         if(team == 0){
             troop.x = -100;
         } else {
@@ -208,12 +236,37 @@ let gameState = {
         troop.health = troopStats.health;
         troop.target;
         troop.team = team;
+        troop.type = troopStats.type;
+        troop.armour = troopStats.armour;
+        if(troop.type == 'ground'){
+            troop.depth = 1;
+        } else if (troop.type == 'air'){
+            troop.depth = 5;
+        } else {
+            troop.depth = 0;
+        }
+        
+        
+        for (var i = 0; i < gameState.troops.getChildren().length; i++){ 
+            if(gameState.troops.getChildren()[i].type == troop.type){
+                scene.physics.add.collider(troop, gameState.troops.getChildren()[i]);
+            }
+        }
+        
+        if(troopStats.width){
+            troop.body.width = troopStats.width;
+            troop.body.offset.y = troopStats.width/5;
+        } if (troopStats.height){
+            troop.body.height = troopStats.height;
+            troop.body.offset.y = troopStats.height/5;
+        }
         
         gameState.createHealthBar(scene,troop,troopStats.health);
         
         var attackLoop = scene.time.addEvent({
             delay: troopStats.fireRate,
             callback: ()=>{
+                troop.anims.play(`${troopStats.sprite}`+color+`Attack`,true);
                 troopStats.attack(scene,troop);
             },  
             startAt: 0,
@@ -221,31 +274,44 @@ let gameState = {
             repeat: -1
         }); 
         attackLoop.paused = true;
-        
+        var idlePlayed = false;
         var mainLoop = scene.time.addEvent({
             delay: 1,
             callback: ()=>{
                 if(troop.health > 0){
-                    if(!troop.target || troop.target.health <= 0){
-                        var dist;
-                        var closest = 10000;
-                        if(gameState.troops.getChildren().length > 0){
-                            for (var i = 0; i < gameState.troops.getChildren().length; i++){ 
-                                dist = Phaser.Math.Distance.BetweenPoints(gameState.troops.getChildren()[i], troop);
-                                if(dist<closest && gameState.troops.getChildren()[i].team != troop.team){
-                                    closest = dist;
+                    var dist;
+                    var closest = 10000;
+                    if(gameState.troops.getChildren().length > 0){
+                        for (var i = 0; i < gameState.troops.getChildren().length; i++){ 
+                            dist = Phaser.Math.Distance.BetweenPoints(gameState.troops.getChildren()[i], troop);
+                            if(dist<closest && gameState.troops.getChildren()[i].team != troop.team){
+                                closest = dist;
+                                if(troopStats.target == 'ground&air'){
+                                    troop.target = gameState.troops.getChildren()[i];
+                                } else if (troopStats.target == 'ground' && gameState.troops.getChildren()[i].type == 'ground'){
+                                    troop.target = gameState.troops.getChildren()[i];
+                                } else if (troopStats.target == 'air' && gameState.troops.getChildren()[i].type == 'air'){
+                                    troop.target = gameState.troops.getChildren()[i];
+                                } else if (gameState.troops.getChildren()[i].type == 'building'){
                                     troop.target = gameState.troops.getChildren()[i];
                                 }
                             }
                         }
+                    }
+                    if(!troop.target || troop.target.health <= 0){
+                        
                     }else {
                         troop.setRotation(Phaser.Math.Angle.Between(troop.x,troop.y,troop.target.x,troop.target.y)); 
                         if(Phaser.Math.Distance.BetweenPoints(troop.target, troop) < troopStats.range && troop.target.health > 0){
-                            troop.anims.play(`${troopStats.sprite}`+color+`Attack`,true);
+                            if(idlePlayed == false){
+                                troop.anims.play(`${troopStats.sprite}`+color+`Idle`,true);
+                                idlePlayed = true;
+                            }
                             troop.setVelocityX(0);
                             troop.setVelocityY(0);
                             attackLoop.paused = false;
                         }else {
+                            idlePlayed = false;
                             scene.physics.moveTo(troop, troop.target.x, troop.target.y,troopStats.speed);
                             attackLoop.paused = true;
                             troop.anims.play(`${troopStats.sprite}`+color+`Move`,true);
@@ -253,8 +319,8 @@ let gameState = {
                     }
                 } else {
                     mainLoop.destroy();
-                    troop.destroy();
                     attackLoop.destroy();
+                    troopStats.death(scene,troop);
                 }
                 
             },  
@@ -266,8 +332,8 @@ let gameState = {
     },
     
     
-    createExplosion: function(scene,x,y){
-        var explode = scene.physics.add.sprite(x,y,`buildingExplosion`).setScale(2);
+    createExplosion: function(scene,x,y,scale){
+        var explode = scene.physics.add.sprite(x,y,`buildingExplosion`).setScale(scale).setDepth(5);
         explode.anims.play('explode',true);
         scene.time.addEvent({
             delay: 1000,

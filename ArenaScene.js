@@ -25,7 +25,6 @@ class ArenaScene extends Phaser.Scene {
         //this.load.spritesheet('redscout','tf2arenaimages/redscout.png',{frameWidth: 33,frameHeight:53});
     }
     create(){
-        game.scale.resize(2000, 650);
         gameState.scroll = 0;
         gameState.mapWidth = 2000;
         gameState.globalScene = this;
@@ -43,9 +42,11 @@ class ArenaScene extends Phaser.Scene {
         gameState.enemy = this.physics.add.group();
         gameState.troops = this.physics.add.group();
         
+        gameState.createMap(this, 'human', 'human',null, gameState.mapWidth);
+        
         gameState.globalScene.scene.launch("BuyTroopScene");
         this.time.addEvent({
-            delay: 500,
+            delay: 5000,
             callback: ()=>{
                 gameState.createTroop(this,gameState.humanTrooperStats,1);
             },  
@@ -54,7 +55,7 @@ class ArenaScene extends Phaser.Scene {
             repeat: -1
         }); 
         this.time.addEvent({
-            delay: 5000,
+            delay: 30000,
             callback: ()=>{
                 gameState.createTroop(this,gameState.humanMechStats,1);
             },  
@@ -63,7 +64,7 @@ class ArenaScene extends Phaser.Scene {
             repeat: -1
         }); 
         this.time.addEvent({
-            delay: 10000,
+            delay: 60000,
             callback: ()=>{
                 gameState.createTroop(this,gameState.humanTankStats,1);
             },  
