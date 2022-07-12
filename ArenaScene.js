@@ -34,7 +34,6 @@ class ArenaScene extends Phaser.Scene {
         });*/
         gameState.input=this.input;
         gameState.mouse=this.input.mousePointer;
-        gameState.camera = this.cameras.main;
         //this.input.mouse.disableContextMenu();
         gameState.cursors = this.input.keyboard.createCursorKeys();
         gameState.keys = this.input.keyboard.addKeys('W,S,A,D,R,SPACE,SHIFT,ONE,TWO,THREE,FOUR,FIVE,SIX,SEVEN,EIGHT,ESC,LEFT,RIGHT');
@@ -43,10 +42,12 @@ class ArenaScene extends Phaser.Scene {
         gameState.troops = this.physics.add.group();
         
         gameState.createMap(this, 'human', 'human',null, gameState.mapWidth);
+        gameState.camera = this.cameras.main;
+        
         
         gameState.globalScene.scene.launch("BuyTroopScene");
         this.time.addEvent({
-            delay: 5000,
+            delay: 6000,
             callback: ()=>{
                 gameState.createTroop(this,gameState.humanTrooperStats,1);
             },  
@@ -56,6 +57,15 @@ class ArenaScene extends Phaser.Scene {
         }); 
         this.time.addEvent({
             delay: 30000,
+            callback: ()=>{
+                gameState.createTroop(this,gameState.humanEndoTrooperStats,1);
+            },  
+            startAt: 0,
+            timeScale: 1,
+            repeat: -1
+        }); 
+        this.time.addEvent({
+            delay: 45000,
             callback: ()=>{
                 gameState.createTroop(this,gameState.humanMechStats,1);
             },  
@@ -72,6 +82,15 @@ class ArenaScene extends Phaser.Scene {
             timeScale: 1,
             repeat: -1
         }); 
+        this.time.addEvent({
+            delay: 180000,
+            callback: ()=>{
+                gameState.createTroop(this,gameState.humanBattleShipStats,1);
+            },  
+            startAt: 0,
+            timeScale: 1,
+            repeat: -1
+        });
        
         
         
@@ -83,10 +102,10 @@ class ArenaScene extends Phaser.Scene {
     }
     update(){
         if(gameState.keys.D.isDown && gameState.scroll <= gameState.mapWidth-1300){
-            gameState.camera.x -= 10;
+            gameState.camera.scrollX += 10;
             gameState.scroll += 10;
         } else if (gameState.keys.A.isDown && gameState.scroll >= 10){
-            gameState.camera.x += 10;
+            gameState.camera.scrollX -= 10;
             gameState.scroll -= 10;
         }
     }

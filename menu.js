@@ -14,8 +14,10 @@ class MenuScene extends Phaser.Scene {
         this.load.image('moneyIcon','images/moneyIcon.png');
         this.load.image('upgradeIncomeIcon','images/upgradeIncomeIcon.png');
         
-        //bullets
+        //Projectiles
         this.load.image('bullet1','images/bullet1.png');
+        this.load.image('missile1','images/missile1.png');
+        this.load.image('laser1','images/laser1.png');
         
         //Human Troops
             //human Trooper
@@ -24,12 +26,18 @@ class MenuScene extends Phaser.Scene {
             //human Tank
             this.load.spritesheet('humanTank','images/humanTank.png',{frameWidth: 70,frameHeight:70});
             this.load.spritesheet('humanTankGreen','images/humanTankGreen.png',{frameWidth: 70,frameHeight:70});
+            //human EndoTrooper
+            this.load.spritesheet('humanEndoTrooper','images/humanEndoTrooper.png',{frameWidth: 60,frameHeight:60});
+            this.load.spritesheet('humanEndoTrooperGreen','images/humanEndoTrooperGreen.png',{frameWidth: 60,frameHeight:60});
             //human Mech
             this.load.spritesheet('humanMech','images/humanMech.png',{frameWidth: 60,frameHeight:60});
             this.load.spritesheet('humanMechGreen','images/humanMechGreen.png',{frameWidth: 60,frameHeight:60});
             //human Sniper
             this.load.spritesheet('humanSniper','images/humanSniper.png',{frameWidth: 70,frameHeight:70});
             this.load.spritesheet('humanSniperGreen','images/humanSniperGreen.png',{frameWidth: 70,frameHeight:70});
+            //human BattleShip
+            this.load.spritesheet('humanBattleShip','images/humanBattleShip.png',{frameWidth: 110,frameHeight:90});
+            this.load.spritesheet('humanBattleShipGreen','images/humanBattleShipGreen.png',{frameWidth: 110,frameHeight:90});
         //Human Buildings
             //human Hq
             this.load.spritesheet('humanHq','images/humanHq.png',{frameWidth: 200,frameHeight:200});
@@ -115,6 +123,7 @@ class MenuScene extends Phaser.Scene {
                     frameRate: 5,
                     frames:this.anims.generateFrameNames('humanTrooperGreen',{start: 6,end: 8})
                 });
+        
             //Human Tank
             //Blue
                 this.anims.create({
@@ -160,6 +169,7 @@ class MenuScene extends Phaser.Scene {
                     frameRate: 5,
                     frames:this.anims.generateFrameNames('humanTankGreen',{start: 0,end: 0})
                 });
+        
             //Human Mech
             //Blue
                 this.anims.create({
@@ -205,6 +215,7 @@ class MenuScene extends Phaser.Scene {
                     frameRate: 5,
                     frames:this.anims.generateFrameNames('humanMechGreen',{start: 0,end: 0})
                 });
+        
             //Human Sniper
             //Blue
                 this.anims.create({
@@ -250,8 +261,102 @@ class MenuScene extends Phaser.Scene {
                     frameRate: 5,
                     frames:this.anims.generateFrameNames('humanSniperGreen',{start: 7,end: 9})
                 });
-            
         
+            //Human EndoTrooper
+            //Blue
+                this.anims.create({
+                    key: 'humanEndoTrooperIdle',
+                    frameRate: 1,
+                    frames:this.anims.generateFrameNames('humanEndoTrooper',{start: 0,end: 0})
+                });
+                this.anims.create({
+                    key: 'humanEndoTrooperMove',
+                    frameRate: 5,
+                    repeat: -1,
+                    frames:this.anims.generateFrameNames('humanEndoTrooper',{start: 0,end: 3})
+                });
+                this.anims.create({
+                    key: 'humanEndoTrooperAttack',
+                    frameRate: 10,
+                    frames:this.anims.generateFrameNames('humanEndoTrooper',{start: 4,end: 8})
+                });
+                this.anims.create({
+                    key: 'humanEndoTrooperDeath',
+                    frameRate: 5,
+                    frames:this.anims.generateFrameNames('humanEndoTrooper',{start: 0,end: 0})
+                });
+            //Green
+                this.anims.create({
+                    key: 'humanEndoTrooperGreenIdle',
+                    frameRate: 1,
+                    frames:this.anims.generateFrameNames('humanEndoTrooperGreen',{start: 0,end: 0})
+                });
+                this.anims.create({
+                    key: 'humanEndoTrooperGreenMove',
+                    frameRate: 5,
+                    repeat: -1,
+                    frames:this.anims.generateFrameNames('humanEndoTrooperGreen',{start: 0,end: 3})
+                });
+                this.anims.create({
+                    key: 'humanEndoTrooperGreenAttack',
+                    frameRate: 10,
+                    frames:this.anims.generateFrameNames('humanEndoTrooperGreen',{start: 4,end: 8})
+                });
+                this.anims.create({
+                    key: 'humanEndoTrooperGreenDeath',
+                    frameRate: 5,
+                    frames:this.anims.generateFrameNames('humanEndoTrooperGreen',{start: 0,end: 0})
+                });
+            
+            //Human BattleShip
+            //Blue
+                this.anims.create({
+                    key: 'humanBattleShipIdle',
+                    frameRate: 10,
+                    repeat: -1,
+                    frames:this.anims.generateFrameNames('humanBattleShip',{start: 0,end: 3})
+                });
+                this.anims.create({
+                    key: 'humanBattleShipMove',
+                    frameRate: 5,
+                    repeat: -1,
+                    frames:this.anims.generateFrameNames('humanBattleShip',{start: 4,end: 7})
+                });
+                this.anims.create({
+                    key: 'humanBattleShipAttack',
+                    frameRate: 10,
+                    repeat: -1,
+                    frames:this.anims.generateFrameNames('humanBattleShip',{start: 0,end: 3})
+                });
+                this.anims.create({
+                    key: 'humanBattleShipDeath',
+                    frameRate: 5,
+                    frames:this.anims.generateFrameNames('humanBattleShip',{start: 0,end: 0})
+                });
+            //Green
+                this.anims.create({
+                    key: 'humanBattleShipGreenIdle',
+                    frameRate: 1,
+                    repeat: -1,
+                    frames:this.anims.generateFrameNames('humanBattleShipGreen',{start: 0,end: 3})
+                });
+                this.anims.create({
+                    key: 'humanBattleShipGreenMove',
+                    frameRate: 5,
+                    repeat: -1,
+                    frames:this.anims.generateFrameNames('humanBattleShipGreen',{start: 4,end: 7})
+                });
+                this.anims.create({
+                    key: 'humanBattleShipGreenAttack',
+                    frameRate: 10,
+                    repeat: -1,
+                    frames:this.anims.generateFrameNames('humanBattleShipGreen',{start: 0,end: 3})
+                });
+                this.anims.create({
+                    key: 'humanBattleShipGreenDeath',
+                    frameRate: 5,
+                    frames:this.anims.generateFrameNames('humanBattleShipGreen',{start: 0,end: 0})
+                });
         
         
         //var button = this.add.image(window.innerWidth/2,window.innerHeight/2,'startButton').setInteractive();

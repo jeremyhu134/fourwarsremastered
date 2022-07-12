@@ -40,8 +40,8 @@ let gameState = {
         health: 50,
         speed: 100,
         range: 150,
-        damage: 5,
-        fireRate: 200,
+        damage: 4,
+        fireRate: 250,
         type: 'ground',
         armour: false,
         target: 'ground&air',
@@ -60,8 +60,8 @@ let gameState = {
         health: 40,
         speed: 90,
         range: 600,
-        damage: 60,
-        armourDamage: 20,
+        damage: 65,
+        armourDamage: 35,
         fireRate: 5500,
         width: 50,
         height: 50,
@@ -76,6 +76,40 @@ let gameState = {
             }
         },
         death: function(scene,troop){
+            troop.destroy();
+        }
+    },
+    humanEndoTrooperStats:{
+        name: 'Human Endo-Trooper',
+        description: 'Bulky ground unit that is meant to take the front lines.',
+        sprite: 'humanEndoTrooper',
+        cost: 100,
+        health: 110,
+        speed: 70,
+        range: 175,
+        damage: 30,
+        armourDamage: 35,
+        fireRate: 1200,
+        type: 'ground',
+        armour: true,
+        target: 'ground',
+        attack: function(scene,troop){
+            var missile = gameState.bullets.create(troop.x,troop.y, `missile1`);
+            missile.setRotation(Phaser.Math.Angle.Between(troop.x,troop.y,troop.target.x,troop.target.y)); 
+            scene.physics.moveTo(missile, troop.target.x, troop.target.y,1000);
+            
+            scene.physics.add.overlap(missile, troop.target,(missile, targ)=>{
+                gameState.createExplosion(scene,troop.target.x,troop.target.y,0.8);
+                missile.destroy();
+                if(troop.target.armour == true){
+                    troop.target.health -= gameState.humanEndoTrooperStats.armourDamage;
+                }else {
+                    troop.target.health -= gameState.humanEndoTrooperStats.damage;
+                }
+            });
+        },
+        death: function(scene,troop){
+            gameState.createExplosion(scene,troop.x,troop.y,0.9);
             troop.destroy();
         }
     },
@@ -117,22 +151,66 @@ let gameState = {
         description: 'Moderate ground unit equipped with twin auto machine guns.',
         sprite: 'humanMech',
         cost: 125,
-        health: 100,
+        health: 125,
         speed: 80,
-        range: 175,
-        damage: 7,
-        fireRate: 150,
+        range: 225,
+        damage: 5,
+        airDamage: 7,
+        fireRate: 200,
         type: 'ground',
         armour: true,
         target: 'ground&air',
         attack: function(scene,troop){
-            troop.target.health -= gameState.humanMechStats.damage;
+            if(troop.target.type == 'air'){
+                troop.target.health -= gameState.humanMechStats.airDamage;
+            }else {
+                troop.target.health -= gameState.humanMechStats.damage;
+            }
         },
         death: function(scene,troop){
             gameState.createExplosion(scene,troop.x,troop.y,1);
             troop.destroy();
         }
     },
+    humanBattleShipStats:{
+        name: 'Human Battleship',
+        description: 'Powerful air unit that deals massive damage.',
+        sprite: 'humanBattleShip',
+        cost: 600,
+        health: 500,
+        speed: 50,
+        range: 300,
+        damage: 50,
+        armourDamage: 50,
+        fireRate: 2500,
+        type: 'air',
+        armour: true,
+        target: 'ground&air',
+        attack: function(scene,troop){
+            var laser = gameState.bullets.create(troop.x,troop.y, `laser1`);
+            laser.setRotation(Phaser.Math.Angle.Between(troop.x,troop.y,troop.target.x,troop.target.y)); 
+            scene.physics.moveTo(laser, troop.target.x, troop.target.y,1300);
+            
+            scene.physics.add.overlap(laser, troop.target,(laser, targ)=>{
+                gameState.createExplosion(scene,troop.target.x,troop.target.y,0.4);
+                laser.destroy();
+                if(troop.target.armour == true){
+                    troop.target.health -= gameState.humanBattleShipStats.armourDamage;
+                }else {
+                    troop.target.health -= gameState.humanBattleShipStats.damage;
+                }
+            });
+        },
+        death: function(scene,troop){
+            gameState.createExplosion(scene,troop.x,troop.y,2);
+            troop.destroy();
+        }
+    },
+    
+    
+    
+    
+    
     
     
     createHealthBar: function(scene, object,maxHP){
@@ -161,7 +239,7 @@ let gameState = {
     
     
     createMap: function(scene, race1, race2, environment, length){
-        game.scale.resize(length, 650);
+        game.scale.resize(1300, 650);
         var base;
         var enemyBase;
         if(race1 == 'human'){

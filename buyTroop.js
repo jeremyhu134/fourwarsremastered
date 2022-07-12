@@ -90,8 +90,21 @@ class BuyTroopScene extends Phaser.Scene {
             }
 		});
         
+        //Human EndoTrooper
+        var humanEndoTrooper = this.add.image(170,585,'humanEndoTrooper').setOrigin(0,0).setInteractive();
+        humanEndoTrooper.setScale(50/humanEndoTrooper.height);
+        humanEndoTrooper.on('pointerover', () => {
+            nameAndCost.setText(`${gameState.humanEndoTrooperStats.name} $${gameState.humanEndoTrooperStats.cost}`);
+		});
+        humanEndoTrooper.on('pointerdown', () => {
+            if(gameState.money >= gameState.humanEndoTrooperStats.cost){
+                gameState.createTroop(gameState.arena,gameState.humanEndoTrooperStats,0);
+                gameState.money -= gameState.humanEndoTrooperStats.cost;
+            }
+		});
+        
         //Human Tank
-        var humanTank = this.add.image(170,585,'humanTank').setOrigin(0,0).setInteractive()
+        var humanTank = this.add.image(240,585,'humanTank').setOrigin(0,0).setInteractive()
         humanTank.setScale(50/humanTank.height);
         humanTank.on('pointerover', () => {
             nameAndCost.setText(`${gameState.humanTankStats.name} $${gameState.humanTankStats.cost}`);
@@ -104,7 +117,7 @@ class BuyTroopScene extends Phaser.Scene {
 		});
         
         //Human Mech
-        var humanMech = this.add.image(240,585,'humanMech').setOrigin(0,0).setInteractive()
+        var humanMech = this.add.image(310,585,'humanMech').setOrigin(0,0).setInteractive()
         humanMech.setScale(50/humanMech.height);
         humanMech.on('pointerover', () => {
             nameAndCost.setText(`${gameState.humanMechStats.name} $${gameState.humanMechStats.cost}`);
@@ -113,6 +126,19 @@ class BuyTroopScene extends Phaser.Scene {
             if(gameState.money >= gameState.humanMechStats.cost){
                 gameState.createTroop(gameState.arena,gameState.humanMechStats,0);
                 gameState.money -= gameState.humanMechStats.cost;
+            }
+		});
+        
+        //Human BattleShip
+        var humanBattleShip = this.add.image(380,585,'humanBattleShip').setOrigin(0,0).setInteractive()
+        humanBattleShip.setScale(50/humanBattleShip.height);
+        humanBattleShip.on('pointerover', () => {
+            nameAndCost.setText(`${gameState.humanBattleShipStats.name} $${gameState.humanBattleShipStats.cost}`);
+		});
+        humanBattleShip.on('pointerdown', () => {
+            if(gameState.money >= gameState.humanBattleShipStats.cost){
+                gameState.createTroop(gameState.arena,gameState.humanBattleShipStats,0);
+                gameState.money -= gameState.humanBattleShipStats.cost;
             }
 		});
 	}
