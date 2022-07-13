@@ -13,6 +13,7 @@ class MenuScene extends Phaser.Scene {
         this.load.spritesheet('explosion','images/explosion.png',{frameWidth: 75,frameHeight:75});
         this.load.image('moneyIcon','images/moneyIcon.png');
         this.load.image('upgradeIncomeIcon','images/upgradeIncomeIcon.png');
+        this.load.image('upgradeTierIcon','images/upgradeTierIcon.png');
         
         //Projectiles
         this.load.image('bullet1','images/bullet1.png');
@@ -35,6 +36,9 @@ class MenuScene extends Phaser.Scene {
             //human Sniper
             this.load.spritesheet('humanSniper','images/humanSniper.png',{frameWidth: 70,frameHeight:70});
             this.load.spritesheet('humanSniperGreen','images/humanSniperGreen.png',{frameWidth: 70,frameHeight:70});
+            //human Falcon
+            this.load.spritesheet('humanFalcon','images/humanFalcon.png',{frameWidth: 70,frameHeight:70});
+            this.load.spritesheet('humanFalconGreen','images/humanFalconGreen.png',{frameWidth: 70,frameHeight:70});
             //human BattleShip
             this.load.spritesheet('humanBattleShip','images/humanBattleShip.png',{frameWidth: 110,frameHeight:90});
             this.load.spritesheet('humanBattleShipGreen','images/humanBattleShipGreen.png',{frameWidth: 110,frameHeight:90});
@@ -356,6 +360,54 @@ class MenuScene extends Phaser.Scene {
                     key: 'humanBattleShipGreenDeath',
                     frameRate: 5,
                     frames:this.anims.generateFrameNames('humanBattleShipGreen',{start: 0,end: 0})
+                });
+        
+            //Human Falcon
+            //Blue
+                this.anims.create({
+                    key: 'humanFalconIdle',
+                    frameRate: 0,
+                    repeat: -1,
+                    frames:this.anims.generateFrameNames('humanFalcon',{start: 0,end: 0})
+                });
+                this.anims.create({
+                    key: 'humanFalconMove',
+                    frameRate: 24,
+                    repeat: -1,
+                    frames:this.anims.generateFrameNames('humanFalcon',{start: 1,end: 4})
+                });
+                this.anims.create({
+                    key: 'humanFalconAttack',
+                    frameRate: 20,
+                    frames:this.anims.generateFrameNames('humanFalcon',{start: 5,end: 9})
+                });
+                this.anims.create({
+                    key: 'humanFalconDeath',
+                    frameRate: 0,
+                    frames:this.anims.generateFrameNames('humanFalcon',{start: 0,end: 0})
+                });
+            //Green
+                this.anims.create({
+                    key: 'humanFalconGreenIdle',
+                    frameRate: 0,
+                    repeat: -1,
+                    frames:this.anims.generateFrameNames('humanFalconGreen',{start: 0,end: 0})
+                });
+                this.anims.create({
+                    key: 'humanFalconGreenMove',
+                    frameRate: 24,
+                    repeat: -1,
+                    frames:this.anims.generateFrameNames('humanFalconGreen',{start: 1,end: 4})
+                });
+                this.anims.create({
+                    key: 'humanFalconGreenAttack',
+                    frameRate: 20,
+                    frames:this.anims.generateFrameNames('humanFalconGreen',{start: 5,end: 9})
+                });
+                this.anims.create({
+                    key: 'humanFalconGreenDeath',
+                    frameRate: 0,
+                    frames:this.anims.generateFrameNames('humanFalconGreen',{start: 0,end: 0})
                 });
         
         

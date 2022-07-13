@@ -47,8 +47,10 @@ class ArenaScene extends Phaser.Scene {
         
         gameState.globalScene.scene.launch("BuyTroopScene");
         this.time.addEvent({
-            delay: 6000,
+            delay: 20000,
             callback: ()=>{
+                gameState.createTroop(this,gameState.humanTrooperStats,1);
+                gameState.createTroop(this,gameState.humanTrooperStats,1);
                 gameState.createTroop(this,gameState.humanTrooperStats,1);
             },  
             startAt: 0,
@@ -56,7 +58,7 @@ class ArenaScene extends Phaser.Scene {
             repeat: -1
         }); 
         this.time.addEvent({
-            delay: 30000,
+            delay: 40000,
             callback: ()=>{
                 gameState.createTroop(this,gameState.humanEndoTrooperStats,1);
             },  
@@ -65,7 +67,7 @@ class ArenaScene extends Phaser.Scene {
             repeat: -1
         }); 
         this.time.addEvent({
-            delay: 45000,
+            delay: 60000,
             callback: ()=>{
                 gameState.createTroop(this,gameState.humanMechStats,1);
             },  
@@ -74,7 +76,7 @@ class ArenaScene extends Phaser.Scene {
             repeat: -1
         }); 
         this.time.addEvent({
-            delay: 60000,
+            delay: 120000,
             callback: ()=>{
                 gameState.createTroop(this,gameState.humanTankStats,1);
             },  

@@ -19,8 +19,6 @@ class BuyTroopScene extends Phaser.Scene {
         });
         
         
-        
-        gameState.money = 0;
         gameState.moneyIncome = 0.1;
         gameState.upgrades = 0;
         this.add.image(10,10,'moneyIcon').setOrigin(0,0);
@@ -62,10 +60,84 @@ class BuyTroopScene extends Phaser.Scene {
         
         
         
+        gameState.tier = 1;
+        var upgradeTier = this.add.image(1130,585,'upgradeTierIcon').setOrigin(0,0).setInteractive();
+        gameState.upgradeTierCost = 200;
+        upgradeTier.setScale(50/upgradeTier.height);
+        upgradeTier.on('pointerover', () => {
+            if(gameState.tier >= 3){
+                nameAndCost.setText(`Upgrade Tier  MAXED`);
+            }else {
+                nameAndCost.setText(`Upgrade Tier : ${gameState.tier}   $${gameState.upgradeTierCost}`);
+            }
+		});
+        upgradeTier.on('pointerdown', () => {
+            if(gameState.money >= gameState.upgradeTierCost && gameState.tier < 3){
+                gameState.tier++;
+                gameState.money -= gameState.upgradeTierCost;
+                if(gameState.tier == 2){
+                    gameState.upgradeTierCost = 500;
+                    //Human Tank
+                    var humanTank = scene.add.image(240,585,'humanTank').setOrigin(0,0).setInteractive()
+                    humanTank.setScale(50/humanTank.height);
+                    humanTank.on('pointerover', () => {
+                        nameAndCost.setText(`${gameState.humanTankStats.name} $${gameState.humanTankStats.cost}`);
+                    });
+                    humanTank.on('pointerdown', () => {
+                        if(gameState.money >= gameState.humanTankStats.cost){
+                            gameState.createTroop(gameState.arena,gameState.humanTankStats,0);
+                            gameState.money -= gameState.humanTankStats.cost;
+                        }
+                    });
+
+                    //Human Mech
+                    var humanMech = scene.add.image(310,585,'humanMech').setOrigin(0,0).setInteractive()
+                    humanMech.setScale(50/humanMech.height);
+                    humanMech.on('pointerover', () => {
+                        nameAndCost.setText(`${gameState.humanMechStats.name} $${gameState.humanMechStats.cost}`);
+                    });
+                    humanMech.on('pointerdown', () => {
+                        if(gameState.money >= gameState.humanMechStats.cost){
+                            gameState.createTroop(gameState.arena,gameState.humanMechStats,0);
+                            gameState.money -= gameState.humanMechStats.cost;
+                        }
+                    });
+
+                    //Human Falcon
+                    var humanFalcon = scene.add.image(380,585,'humanFalcon').setOrigin(0,0).setInteractive()
+                    humanFalcon.setScale(50/humanFalcon.height);
+                    humanFalcon.on('pointerover', () => {
+                        nameAndCost.setText(`${gameState.humanFalconStats.name} $${gameState.humanFalconStats.cost}`);
+                    });
+                    humanFalcon.on('pointerdown', () => {
+                        if(gameState.money >= gameState.humanFalconStats.cost){
+                            gameState.createTroop(gameState.arena,gameState.humanFalconStats,0);
+                            gameState.money -= gameState.humanFalconStats.cost;
+                        }
+                    });
+                } else if (gameState.tier == 3){
+                    //Human BattleShip
+                    var humanBattleShip = scene.add.image(450,585,'humanBattleShip').setOrigin(0,0).setInteractive()
+                    humanBattleShip.setScale(50/humanBattleShip.height);
+                    humanBattleShip.on('pointerover', () => {
+                        nameAndCost.setText(`${gameState.humanBattleShipStats.name} $${gameState.humanBattleShipStats.cost}`);
+                    });
+                    humanBattleShip.on('pointerdown', () => {
+                        if(gameState.money >= gameState.humanBattleShipStats.cost){
+                            gameState.createTroop(gameState.arena,gameState.humanBattleShipStats,0);
+                            gameState.money -= gameState.humanBattleShipStats.cost;
+                        }
+                    });
+                }
+            }
+		});
+        
+        
+        
         
         
         //Human Trooper
-        var humanTrooper = this.add.image(30,585,'humanTrooper').setOrigin(0,0).setInteractive()
+        var humanTrooper = scene.add.image(30,585,'humanTrooper').setOrigin(0,0).setInteractive()
         humanTrooper.setScale(50/humanTrooper.height);
         humanTrooper.on('pointerover', () => {
             nameAndCost.setText(`${gameState.humanTrooperStats.name} $${gameState.humanTrooperStats.cost}`);
@@ -78,7 +150,7 @@ class BuyTroopScene extends Phaser.Scene {
 		});
         
         //Human Sniper
-        var humanSniper = this.add.image(100,585,'humanSniper').setOrigin(0,0).setInteractive();
+        var humanSniper = scene.add.image(100,585,'humanSniper').setOrigin(0,0).setInteractive();
         humanSniper.setScale(60/humanSniper.height);
         humanSniper.on('pointerover', () => {
             nameAndCost.setText(`${gameState.humanSniperStats.name} $${gameState.humanSniperStats.cost}`);
@@ -91,7 +163,7 @@ class BuyTroopScene extends Phaser.Scene {
 		});
         
         //Human EndoTrooper
-        var humanEndoTrooper = this.add.image(170,585,'humanEndoTrooper').setOrigin(0,0).setInteractive();
+        var humanEndoTrooper = scene.add.image(170,585,'humanEndoTrooper').setOrigin(0,0).setInteractive();
         humanEndoTrooper.setScale(50/humanEndoTrooper.height);
         humanEndoTrooper.on('pointerover', () => {
             nameAndCost.setText(`${gameState.humanEndoTrooperStats.name} $${gameState.humanEndoTrooperStats.cost}`);
@@ -103,44 +175,6 @@ class BuyTroopScene extends Phaser.Scene {
             }
 		});
         
-        //Human Tank
-        var humanTank = this.add.image(240,585,'humanTank').setOrigin(0,0).setInteractive()
-        humanTank.setScale(50/humanTank.height);
-        humanTank.on('pointerover', () => {
-            nameAndCost.setText(`${gameState.humanTankStats.name} $${gameState.humanTankStats.cost}`);
-		});
-        humanTank.on('pointerdown', () => {
-            if(gameState.money >= gameState.humanTankStats.cost){
-                gameState.createTroop(gameState.arena,gameState.humanTankStats,0);
-                gameState.money -= gameState.humanTankStats.cost;
-            }
-		});
-        
-        //Human Mech
-        var humanMech = this.add.image(310,585,'humanMech').setOrigin(0,0).setInteractive()
-        humanMech.setScale(50/humanMech.height);
-        humanMech.on('pointerover', () => {
-            nameAndCost.setText(`${gameState.humanMechStats.name} $${gameState.humanMechStats.cost}`);
-		});
-        humanMech.on('pointerdown', () => {
-            if(gameState.money >= gameState.humanMechStats.cost){
-                gameState.createTroop(gameState.arena,gameState.humanMechStats,0);
-                gameState.money -= gameState.humanMechStats.cost;
-            }
-		});
-        
-        //Human BattleShip
-        var humanBattleShip = this.add.image(380,585,'humanBattleShip').setOrigin(0,0).setInteractive()
-        humanBattleShip.setScale(50/humanBattleShip.height);
-        humanBattleShip.on('pointerover', () => {
-            nameAndCost.setText(`${gameState.humanBattleShipStats.name} $${gameState.humanBattleShipStats.cost}`);
-		});
-        humanBattleShip.on('pointerdown', () => {
-            if(gameState.money >= gameState.humanBattleShipStats.cost){
-                gameState.createTroop(gameState.arena,gameState.humanBattleShipStats,0);
-                gameState.money -= gameState.humanBattleShipStats.cost;
-            }
-		});
 	}
     update(){
         

@@ -30,7 +30,7 @@ let gameState = {
         height: 650
     },
     
-    money: 100,
+    money: 0,
     
     humanTrooperStats:{
         name: 'Human Trooper',
@@ -41,12 +41,17 @@ let gameState = {
         speed: 100,
         range: 150,
         damage: 4,
+        armourDamage: 3,
         fireRate: 250,
         type: 'ground',
         armour: false,
         target: 'ground&air',
         attack: function(scene,troop){
-            troop.target.health -= gameState.humanTrooperStats.damage;
+            if(troop.target.armour == true){
+                troop.target.health -= gameState.humanTrooperStats.armourDamage;
+            } else {
+                troop.target.health -= gameState.humanTrooperStats.damage;
+            }
         },
         death: function(scene,troop){
             troop.destroy();
@@ -172,6 +177,48 @@ let gameState = {
             troop.destroy();
         }
     },
+    humanFalconStats:{
+        name: 'Human Falcon',
+        description: 'Aggressive Air unit that is profficient in destroying air units.',
+        sprite: 'humanFalcon',
+        cost: 150,
+        health: 125,
+        speed: 150,
+        range: 175,
+        damage: 20,
+        airDamage: 50,
+        fireRate: 1600,
+        type: 'air',
+        armour: true,
+        target: 'ground&air',
+        attack: function(scene,troop){
+            if(troop.target.type == 'air'){
+                var missile = gameState.bullets.create(troop.x,troop.y, `missile1`);
+                missile.setRotation(Phaser.Math.Angle.Between(troop.x,troop.y,troop.target.x,troop.target.y)); 
+                scene.physics.moveTo(missile, troop.target.x, troop.target.y,1000);
+                
+                scene.physics.add.overlap(missile, troop.target,(missile, targ)=>{
+                    gameState.createExplosion(scene,troop.target.x,troop.target.y,0.8);
+                    missile.destroy();
+                    troop.target.health -= gameState.humanFalconStats.airDamage;
+                });
+            } else {
+                var laser = gameState.bullets.create(troop.x,troop.y, `laser1`);
+                laser.setRotation(Phaser.Math.Angle.Between(troop.x,troop.y,troop.target.x,troop.target.y)); 
+                scene.physics.moveTo(laser, troop.target.x, troop.target.y,1300);
+
+                scene.physics.add.overlap(laser, troop.target,(laser, targ)=>{
+                    gameState.createExplosion(scene,troop.target.x,troop.target.y,0.4);
+                    laser.destroy();
+                    troop.target.health -= gameState.humanFalconStats.damage;
+                });
+            }
+        },
+        death: function(scene,troop){
+            gameState.createExplosion(scene,troop.x,troop.y,1.1);
+            troop.destroy();
+        }
+    },
     humanBattleShipStats:{
         name: 'Human Battleship',
         description: 'Powerful air unit that deals massive damage.',
@@ -294,7 +341,7 @@ let gameState = {
     
     
     createTroop: function(scene,troopStats,team){
-        var troop = gameState.troops.create(-100,Math.ceil(Math.random()*window.innerHeight), `${troopStats.sprite}`);
+        var troop = gameState.troops.create(-100,Math.ceil(Math.random()*600), `${troopStats.sprite}`);
         /*var rand = Math.ceil(Math.random()*2);
         if(rand == 1){
             troop.y = Math.ceil(Math.random()*(window.innerHeight/2-100));
