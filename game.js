@@ -141,7 +141,7 @@ let gameState = {
             gameState.createExplosion(scene,troop.target.x,troop.target.y,1.5);
             for (var i = 0; i < gameState.troops.getChildren().length; i++){ 
                 dist = Phaser.Math.Distance.BetweenPoints(gameState.troops.getChildren()[i], troop.target);
-                if(dist<gameState.humanTankStats.explodeRadius && gameState.troops.getChildren()[i].team != troop.team){
+                if(dist<gameState.humanTankStats.explodeRadius && gameState.troops.getChildren()[i].team != troop.team && gameState.troops.getChildren()[i].type == 'ground'){
                     gameState.troops.getChildren()[i].health -= gameState.humanTankStats.areaDamage;
                 }
             }
@@ -186,7 +186,7 @@ let gameState = {
         speed: 150,
         range: 175,
         damage: 20,
-        airDamage: 50,
+        airDamage: 40,
         fireRate: 1600,
         type: 'air',
         armour: true,
@@ -223,7 +223,7 @@ let gameState = {
         name: 'Human Battleship',
         description: 'Powerful air unit that deals massive damage.',
         sprite: 'humanBattleShip',
-        cost: 600,
+        cost: 550,
         health: 500,
         speed: 50,
         range: 300,
