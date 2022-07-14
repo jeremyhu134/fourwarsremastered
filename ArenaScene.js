@@ -47,20 +47,11 @@ class ArenaScene extends Phaser.Scene {
         
         gameState.globalScene.scene.launch("BuyTroopScene");
         this.time.addEvent({
-            delay: 20000,
+            delay: 30000,
             callback: ()=>{
                 gameState.createTroop(this,gameState.humanTrooperStats,1);
                 gameState.createTroop(this,gameState.humanTrooperStats,1);
                 gameState.createTroop(this,gameState.humanTrooperStats,1);
-            },  
-            startAt: 0,
-            timeScale: 1,
-            repeat: -1
-        }); 
-        this.time.addEvent({
-            delay: 40000,
-            callback: ()=>{
-                gameState.createTroop(this,gameState.humanEndoTrooperStats,1);
             },  
             startAt: 0,
             timeScale: 1,
@@ -69,7 +60,7 @@ class ArenaScene extends Phaser.Scene {
         this.time.addEvent({
             delay: 60000,
             callback: ()=>{
-                gameState.createTroop(this,gameState.humanMechStats,1);
+                gameState.createTroop(this,gameState.humanEndoTrooperStats,1);
             },  
             startAt: 0,
             timeScale: 1,
@@ -78,6 +69,15 @@ class ArenaScene extends Phaser.Scene {
         this.time.addEvent({
             delay: 120000,
             callback: ()=>{
+                gameState.createTroop(this,gameState.humanMechStats,1);
+            },  
+            startAt: 0,
+            timeScale: 1,
+            repeat: -1
+        }); 
+        this.time.addEvent({
+            delay: 160000,
+            callback: ()=>{
                 gameState.createTroop(this,gameState.humanTankStats,1);
             },  
             startAt: 0,
@@ -85,9 +85,18 @@ class ArenaScene extends Phaser.Scene {
             repeat: -1
         }); 
         this.time.addEvent({
-            delay: 180000,
+            delay: 200000,
             callback: ()=>{
                 gameState.createTroop(this,gameState.humanBattleShipStats,1);
+            },  
+            startAt: 0,
+            timeScale: 1,
+            repeat: -1
+        });
+        this.time.addEvent({
+            delay: 270000,
+            callback: ()=>{
+                gameState.createTroop(this,gameState.humanArmageddonStats,1);
             },  
             startAt: 0,
             timeScale: 1,

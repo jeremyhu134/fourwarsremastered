@@ -219,6 +219,73 @@ let gameState = {
             troop.destroy();
         }
     },
+    
+    humanArmageddonStats:{
+        name: 'Human Armageddon',
+        description: 'Massive Tank that deploys troops and has light attack.',
+        sprite: 'humanArmageddon',
+        cost: 800,
+        health: 500,
+        speed: 30,
+        range: 250,
+        damage: 2,
+        fireRate: 200,
+        passiveRate: 30000,
+        type: 'ground',
+        armour: true,
+        target: 'ground&air',
+        attack: function(scene,troop){
+            troop.target.health -= gameState.humanArmageddonStats.damage;
+        },
+        passive: function(scene,troop){
+            troop.depth = 2;
+            troop.anims.play(`humanArmageddon`+troop.color+`Idle`,true);
+            var pause = scene.time.addEvent({
+                delay: 1,
+                callback: ()=>{
+                    if(troop.health <= 0){
+                        pause.destroy();
+                    } else {
+                        troop.setVelocityX(0);
+                        troop.setVelocityY(0);
+                    }
+                },  
+                startAt: 0,
+                timeScale: 1,
+                repeat: 400,
+            }); 
+            scene.time.addEvent({
+                delay: 5000,
+                callback: ()=>{
+                    scene.physics.moveTo(troop, troop.target.x, troop.target.y,gameState.humanArmageddonStats.speed);
+                    troop.anims.play(`humanArmageddon`+troop.color+`Move`,true);
+                },  
+                startAt: 0,
+                timeScale: 1,
+            });
+            var rand = Math.ceil(Math.random()*5);
+            if (rand == 1){
+                gameState.createTroop(scene,gameState.humanTrooperStats,troop.team,troop.x,troop.y+50);
+                gameState.createTroop(scene,gameState.humanTrooperStats,troop.team,troop.x,troop.y);
+                gameState.createTroop(scene,gameState.humanTrooperStats,troop.team,troop.x,troop.y-50);
+            } else if (rand == 2){
+                gameState.createTroop(scene,gameState.humanTrooperStats,troop.team,troop.x,troop.y+20);
+                gameState.createTroop(scene,gameState.humanEndoTrooperStats,troop.team,troop.x,troop.y-30);
+            } else if (rand == 3){
+                gameState.createTroop(scene,gameState.humanTankStats,troop.team,troop.x,troop.y);
+            } else if (rand == 4){
+                gameState.createTroop(scene,gameState.humanMechStats,troop.team,troop.x,troop.y);
+            } else if (rand == 5){
+                gameState.createTroop(scene,gameState.humanSniperStats,troop.team,troop.x,troop.y+30);
+                gameState.createTroop(scene,gameState.humanSniperStats,troop.team,troop.x,troop.y-30);
+            }
+        },
+        death: function(scene,troop){
+            gameState.createExplosion(scene,troop.x,troop.y,2);
+            troop.destroy();
+        }
+    },
+    
     humanBattleShipStats:{
         name: 'Human Battleship',
         description: 'Powerful air unit that deals massive damage.',
@@ -229,7 +296,7 @@ let gameState = {
         range: 300,
         damage: 50,
         armourDamage: 50,
-        fireRate: 2500,
+        fireRate: 2250,
         type: 'air',
         armour: true,
         target: 'ground&air',
@@ -340,8 +407,11 @@ let gameState = {
     },
     
     
-    createTroop: function(scene,troopStats,team){
+    createTroop: function(scene,troopStats,team,x,y){
         var troop = gameState.troops.create(-100,Math.ceil(Math.random()*600), `${troopStats.sprite}`);
+        if(y){
+            troop.y = y;
+        }
         /*var rand = Math.ceil(Math.random()*2);
         if(rand == 1){
             troop.y = Math.ceil(Math.random()*(window.innerHeight/2-100));
@@ -350,13 +420,18 @@ let gameState = {
         }*/
         
         var color = '';
+        troop.color = ''
         if(team == 1){
             color = 'Green';
+            troop.color = 'Green';
         }
         if(team == 0){
             troop.x = -100;
         } else {
             troop.x = gameState.mapWidth+100;
+        }
+        if(x){
+            troop.x = x;
         }
         troop.health = troopStats.health;
         troop.target;
@@ -387,6 +462,19 @@ let gameState = {
         }
         
         gameState.createHealthBar(scene,troop,troopStats.health);
+        
+        var passiveLoop;
+        if (troopStats.passive){
+            passiveLoop = scene.time.addEvent({
+                delay: troopStats.passiveRate,
+                callback: ()=>{
+                    troopStats.passive(scene,troop);
+                },  
+                startAt: 0,
+                timeScale: 1,
+                repeat: -1
+            }); 
+        }
         
         var attackLoop = scene.time.addEvent({
             delay: troopStats.fireRate,
@@ -445,6 +533,9 @@ let gameState = {
                 } else {
                     mainLoop.destroy();
                     attackLoop.destroy();
+                    if(passiveLoop){
+                        passiveLoop.destroy();
+                    }
                     troopStats.death(scene,troop);
                 }
                 

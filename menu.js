@@ -36,6 +36,9 @@ class MenuScene extends Phaser.Scene {
             //human Sniper
             this.load.spritesheet('humanSniper','images/humanSniper.png',{frameWidth: 70,frameHeight:70});
             this.load.spritesheet('humanSniperGreen','images/humanSniperGreen.png',{frameWidth: 70,frameHeight:70});
+            //human Armageddon
+            this.load.spritesheet('humanArmageddon','images/humanArmageddon.png',{frameWidth: 140,frameHeight:140});
+            this.load.spritesheet('humanArmageddonGreen','images/humanArmageddonGreen.png',{frameWidth: 140,frameHeight:140});
             //human Falcon
             this.load.spritesheet('humanFalcon','images/humanFalcon.png',{frameWidth: 70,frameHeight:70});
             this.load.spritesheet('humanFalconGreen','images/humanFalconGreen.png',{frameWidth: 70,frameHeight:70});
@@ -408,6 +411,54 @@ class MenuScene extends Phaser.Scene {
                     key: 'humanFalconGreenDeath',
                     frameRate: 0,
                     frames:this.anims.generateFrameNames('humanFalconGreen',{start: 0,end: 0})
+                });
+        
+            //Human Armageddon
+            //Blue
+                this.anims.create({
+                    key: 'humanArmageddonIdle',
+                    frameRate: 14,
+                    repeat: -1,
+                    frames:this.anims.generateFrameNames('humanArmageddon',{start: 0,end: 0})
+                });
+                this.anims.create({
+                    key: 'humanArmageddonMove',
+                    frameRate: 9,
+                    repeat: -1,
+                    frames:this.anims.generateFrameNames('humanArmageddon',{start: 0,end: 8})
+                });
+                this.anims.create({
+                    key: 'humanArmageddonAttack',
+                    frameRate: 16,
+                    frames:this.anims.generateFrameNames('humanArmageddon',{start: 13,end: 15})
+                });
+                
+                this.anims.create({
+                    key: 'humanArmageddonDeath',
+                    frameRate: 0,
+                    frames:this.anims.generateFrameNames('humanArmageddon',{start: 0,end: 0})
+                });
+            //Green
+                this.anims.create({
+                    key: 'humanArmageddonGreenIdle',
+                    frameRate: 14,
+                    frames:this.anims.generateFrameNames('humanArmageddonGreen',{start: 0,end: 0})
+                });
+                this.anims.create({
+                    key: 'humanArmageddonGreenMove',
+                    frameRate: 9,
+                    repeat: -1,
+                    frames:this.anims.generateFrameNames('humanArmageddonGreen',{start: 0,end: 8})
+                });
+                this.anims.create({
+                    key: 'humanArmageddonGreenAttack',
+                    frameRate: 16,
+                    frames:this.anims.generateFrameNames('humanArmageddonGreen',{start: 13,end: 15})
+                });
+                this.anims.create({
+                    key: 'humanArmageddonGreenDeath',
+                    frameRate: 0,
+                    frames:this.anims.generateFrameNames('humanArmageddonGreen',{start: 0,end: 0})
                 });
         
         

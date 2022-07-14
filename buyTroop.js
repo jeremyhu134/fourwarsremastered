@@ -128,6 +128,19 @@ class BuyTroopScene extends Phaser.Scene {
                             gameState.money -= gameState.humanBattleShipStats.cost;
                         }
                     });
+                    
+                    //Human Armageddon
+                    var humanArmageddon = scene.add.image(520,585,'humanArmageddon').setOrigin(0,0).setInteractive()
+                    humanArmageddon.setScale(50/humanArmageddon.height);
+                    humanArmageddon.on('pointerover', () => {
+                        nameAndCost.setText(`${gameState.humanArmageddonStats.name} $${gameState.humanArmageddonStats.cost}`);
+                    });
+                    humanArmageddon.on('pointerdown', () => {
+                        if(gameState.money >= gameState.humanArmageddonStats.cost){
+                            gameState.createTroop(gameState.arena,gameState.humanArmageddonStats,0);
+                            gameState.money -= gameState.humanArmageddonStats.cost;
+                        }
+                    });
                 }
             }
 		});
