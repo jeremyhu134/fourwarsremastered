@@ -17,7 +17,7 @@ const config = {
     scene:[MenuScene,PauseScene,ArenaScene,BuyTroopScene],
     scale: {
         zoom: 1,
-        mode: Phaser.Scale.NONE,
+        mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.NONE
     }
 };
@@ -32,6 +32,39 @@ let gameState = {
     
     money: 0,
     
+    
+    //humans
+    
+    //Turret
+    humanTurretStats:{
+        name: 'Human Turret',
+        description: 'Defense building .',
+        sprite: 'humanTurret',
+        cost: 200,
+        health: 200,
+        speed: 0,
+        range: 350,
+        damage: 1,
+        armourDamage: 1.2,
+        fireRate: 100,
+        type: 'ground',
+        armour: true,
+        target: 'ground&air',
+        spawnTime: 800,
+        attack: function(scene,troop){
+            if(troop.target.armour == true){
+                troop.target.health -= gameState.humanTrooperStats.armourDamage;
+            } else {
+                troop.target.health -= gameState.humanTrooperStats.damage;
+            }
+        },
+        death: function(scene,troop){
+            gameState.createExplosion(scene,troop.x,troop.y,1.3);
+            troop.destroy();
+        }
+    },
+    
+    //Troops
     humanTrooperStats:{
         name: 'Human Trooper',
         description: 'Basic ground unit equipped with an assault rifle that has medium range and can target air and ground units.',
@@ -54,6 +87,7 @@ let gameState = {
             }
         },
         death: function(scene,troop){
+            gameState.createBloodDeath(scene,troop.x,troop.y, troop.body.width/32);
             troop.destroy();
         }
     },
@@ -81,6 +115,7 @@ let gameState = {
             }
         },
         death: function(scene,troop){
+            gameState.createBloodDeath(scene,troop.x,troop.y, troop.body.width/32);
             troop.destroy();
         }
     },
@@ -185,7 +220,7 @@ let gameState = {
         health: 125,
         speed: 150,
         range: 175,
-        damage: 20,
+        damage: 25,
         airDamage: 40,
         fireRate: 1600,
         type: 'air',
@@ -228,7 +263,7 @@ let gameState = {
         health: 500,
         speed: 30,
         range: 250,
-        damage: 2,
+        damage: 3,
         fireRate: 200,
         passiveRate: 30000,
         type: 'ground',
@@ -240,44 +275,21 @@ let gameState = {
         passive: function(scene,troop){
             troop.depth = 2;
             troop.anims.play(`humanArmageddon`+troop.color+`Idle`,true);
-            var pause = scene.time.addEvent({
-                delay: 1,
-                callback: ()=>{
-                    if(troop.health <= 0){
-                        pause.destroy();
-                    } else {
-                        troop.setVelocityX(0);
-                        troop.setVelocityY(0);
-                    }
-                },  
-                startAt: 0,
-                timeScale: 1,
-                repeat: 400,
-            }); 
-            scene.time.addEvent({
-                delay: 5000,
-                callback: ()=>{
-                    scene.physics.moveTo(troop, troop.target.x, troop.target.y,gameState.humanArmageddonStats.speed);
-                    troop.anims.play(`humanArmageddon`+troop.color+`Move`,true);
-                },  
-                startAt: 0,
-                timeScale: 1,
-            });
             var rand = Math.ceil(Math.random()*5);
             if (rand == 1){
-                gameState.createTroop(scene,gameState.humanTrooperStats,troop.team,troop.x,troop.y+50);
-                gameState.createTroop(scene,gameState.humanTrooperStats,troop.team,troop.x,troop.y);
-                gameState.createTroop(scene,gameState.humanTrooperStats,troop.team,troop.x,troop.y-50);
+                gameState.createTroop(scene,gameState.humanTrooperStats,troop.team,troop.x,troop.y+50,troop.color);
+                gameState.createTroop(scene,gameState.humanTrooperStats,troop.team,troop.x,troop.y,troop.color);
+                gameState.createTroop(scene,gameState.humanTrooperStats,troop.team,troop.x,troop.y-50,troop.color);
             } else if (rand == 2){
-                gameState.createTroop(scene,gameState.humanTrooperStats,troop.team,troop.x,troop.y+20);
-                gameState.createTroop(scene,gameState.humanEndoTrooperStats,troop.team,troop.x,troop.y-30);
+                gameState.createTroop(scene,gameState.humanTrooperStats,troop.team,troop.x,troop.y+20,troop.color);
+                gameState.createTroop(scene,gameState.humanEndoTrooperStats,troop.team,troop.x,troop.y-30,troop.color);
             } else if (rand == 3){
-                gameState.createTroop(scene,gameState.humanTankStats,troop.team,troop.x,troop.y);
+                gameState.createTroop(scene,gameState.humanTankStats,troop.team,troop.x,troop.y,troop.color);
             } else if (rand == 4){
-                gameState.createTroop(scene,gameState.humanMechStats,troop.team,troop.x,troop.y);
+                gameState.createTroop(scene,gameState.humanMechStats,troop.team,troop.x,troop.y,troop.color);
             } else if (rand == 5){
-                gameState.createTroop(scene,gameState.humanSniperStats,troop.team,troop.x,troop.y+30);
-                gameState.createTroop(scene,gameState.humanSniperStats,troop.team,troop.x,troop.y-30);
+                gameState.createTroop(scene,gameState.humanSniperStats,troop.team,troop.x,troop.y+30,troop.color);
+                gameState.createTroop(scene,gameState.humanSniperStats,troop.team,troop.x,troop.y-30,troop.color);
             }
         },
         death: function(scene,troop){
@@ -325,6 +337,38 @@ let gameState = {
     
     
     
+    //demons
+    demonCrawlerStats:{
+        name: 'Demon Crawler',
+        description: 'Basic ground unit equipped with an assault rifle that has medium range and can target air and ground units.',
+        sprite: 'demonCrawler',
+        cost: 25,
+        health: 30,
+        speed: 125,
+        range: 30,
+        damage: 5,
+        armourDamage: 3,
+        fireRate: 200,
+        type: 'ground',
+        armour: false,
+        target: 'ground',
+        attack: function(scene,troop){
+            if(troop.target.armour == true){
+                troop.target.health -= gameState.demonCrawlerStats.armourDamage;
+            } else {
+                troop.target.health -= gameState.demonCrawlerStats.damage;
+            }
+        },
+        death: function(scene,troop){
+            gameState.createBloodDeath(scene,troop.x,troop.y, troop.body.width/32);
+            troop.destroy();
+        }
+    },
+    
+    
+    
+    
+    
     
     
     createHealthBar: function(scene, object,maxHP){
@@ -354,6 +398,7 @@ let gameState = {
     
     createMap: function(scene, race1, race2, environment, length){
         game.scale.resize(1300, 650);
+        scene.add.image(0,0,'spacePlatformBg').setOrigin(0,0).setScale(650/195);
         var base;
         var enemyBase;
         if(race1 == 'human'){
@@ -364,6 +409,9 @@ let gameState = {
         if(race2 == 'human'){
             var enemyBase = gameState.troops.create(gameState.mapWidth-100,650/2, `humanHqGreen`).setImmovable().setDepth(10000);
             enemyBase.anims.play('humanHqGreenMove');
+        } else if(race2 == 'demon') {
+            var enemyBase = gameState.troops.create(gameState.mapWidth-100,650/2, `demonHq`).setImmovable().setDepth(10000);
+            enemyBase.anims.play('demonHqMove');
         }
         
         base.team = 0;
@@ -406,9 +454,54 @@ let gameState = {
         });
     },
     
+    //defense
+    createDefense: function(scene,team,color,stats){
+        var x;
+        var y = 650/2;
+        if(team == 0){
+            x = 400;
+        } else if (team == 1){
+            x = gameState.mapWidth-400;
+        }
+        var troop = scene.add.sprite(x,y,`${stats.sprite}`);
+        troop.anims.play(`${stats.sprite}Spawn`,true);
+        scene.time.addEvent({
+            delay: stats.spawnTime,
+            callback: ()=>{
+                troop.destroy();
+                gameState.createTroop(scene,stats,team,x,y,color);
+            },  
+            startAt: 0,
+            timeScale: 1
+        });
+    },
     
-    createTroop: function(scene,troopStats,team,x,y){
+    determineTroop: function(troopStats,troop){
+        if(gameState.humanTrooperStats == troopStats){
+            gameState.connection.send(["create",1,troop.x,troop.y]);
+        } else if(gameState.humanSniperStats == troopStats){
+            gameState.connection.send(["create",2,troop.x,troop.y]);
+        } else if(gameState.humanEndoTrooperStats == troopStats){
+            gameState.connection.send(["create",3,troop.x,troop.y]);
+        } else if(gameState.humanTankStats == troopStats){
+            gameState.connection.send(["create",4,troop.x,troop.y]);
+        } else if(gameState.humanMechStats == troopStats){
+            gameState.connection.send(["create",5,troop.x,troop.y]);
+        } else if(gameState.humanFalconStats == troopStats){
+            gameState.connection.send(["create",6,troop.x,troop.y]);
+        } else if(gameState.humanBattleShipStats == troopStats){
+            gameState.connection.send(["create",7,troop.x,troop.y]);
+        } else if(gameState.humanArmageddonStats == troopStats){
+            gameState.connection.send(["create",8,troop.x,troop.y]);
+        }
+    },
+    
+    createTroop: function(scene,troopStats,team,x,y, unitColor){
         var troop = gameState.troops.create(-100,Math.ceil(Math.random()*600), `${troopStats.sprite}`);
+        if(team == gameState.playerTeam){
+            gameState.determineTroop(troopStats,troop);
+        }
+        
         if(y){
             troop.y = y;
         }
@@ -419,12 +512,9 @@ let gameState = {
             troop.y = (window.innerHeight/2+100) + Math.ceil(Math.random()*(window.innerHeight/2-100));
         }*/
         
-        var color = '';
-        troop.color = ''
-        if(team == 1){
-            color = 'Green';
-            troop.color = 'Green';
-        }
+        var color = unitColor;
+        troop.color = unitColor;
+        
         if(team == 0){
             troop.x = -100;
         } else {
@@ -448,7 +538,7 @@ let gameState = {
         
         
         for (var i = 0; i < gameState.troops.getChildren().length; i++){ 
-            if(gameState.troops.getChildren()[i].type == troop.type){
+            if(gameState.troops.getChildren()[i].type == troop.type && gameState.troops.getChildren()[i].team == troop.team){
                 scene.physics.add.collider(troop, gameState.troops.getChildren()[i]);
             }
         }
@@ -547,6 +637,18 @@ let gameState = {
         
     },
     
+    createBloodDeath: function(scene,x,y,scale){
+        var blood = scene.physics.add.sprite(x,y,`bloodDeath`).setScale(scale).setDepth(0);
+        blood.anims.play('bloodDeathMove',true);
+        scene.time.addEvent({
+            delay: 1000,
+            callback: ()=>{
+                blood.destroy();
+            },  
+            startAt: 0,
+            timeScale: 1
+        }); 
+    },
     
     createExplosion: function(scene,x,y,scale){
         var explode = scene.physics.add.sprite(x,y,`buildingExplosion`).setScale(scale).setDepth(5);
@@ -560,6 +662,25 @@ let gameState = {
             timeScale: 1
         }); 
     },
+    
+    createTempText:function(scene,x,y,text,time,size){
+        var text = scene.add.text(x, y, `${text}`, {
+            fill: '#FF0000', 
+            fontSize: `${size}px`,
+            fontFamily: 'Qahiri',
+            strokeThickness: 5,
+        }).setDepth(-100);
+        scene.time.addEvent({
+            delay: time,
+            callback: ()=>{
+                if(text){
+                  text.destroy();  
+                }
+            },  
+            startAt: 0,
+            timeScale: 1
+        });
+    }
     
     
     

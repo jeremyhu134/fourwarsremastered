@@ -11,7 +11,7 @@ class BuyTroopScene extends Phaser.Scene {
         var scene = this;
         
         var bar = this.add.image(0,570,'buyTowersBar').setOrigin(0,0).setScale(4);
-        var nameAndCost = scene.add.text( 800, 590, `Select Troop`, {
+        var nameAndCost = scene.add.text( 750, 590, `Select Troop`, {
             fill: '#OOOOOO', 
             fontSize: '25px',
             fontFamily: 'Qahiri',
@@ -85,7 +85,7 @@ class BuyTroopScene extends Phaser.Scene {
                     });
                     humanTank.on('pointerdown', () => {
                         if(gameState.money >= gameState.humanTankStats.cost){
-                            gameState.createTroop(gameState.arena,gameState.humanTankStats,0);
+                            gameState.createTroop(gameState.arena,gameState.humanTankStats,0,null,null,gameState.color);
                             gameState.money -= gameState.humanTankStats.cost;
                         }
                     });
@@ -98,7 +98,7 @@ class BuyTroopScene extends Phaser.Scene {
                     });
                     humanMech.on('pointerdown', () => {
                         if(gameState.money >= gameState.humanMechStats.cost){
-                            gameState.createTroop(gameState.arena,gameState.humanMechStats,0);
+                            gameState.createTroop(gameState.arena,gameState.humanMechStats,0,null,null,gameState.color);
                             gameState.money -= gameState.humanMechStats.cost;
                         }
                     });
@@ -111,7 +111,7 @@ class BuyTroopScene extends Phaser.Scene {
                     });
                     humanFalcon.on('pointerdown', () => {
                         if(gameState.money >= gameState.humanFalconStats.cost){
-                            gameState.createTroop(gameState.arena,gameState.humanFalconStats,0);
+                            gameState.createTroop(gameState.arena,gameState.humanFalconStats,0,null,null,gameState.color);
                             gameState.money -= gameState.humanFalconStats.cost;
                         }
                     });
@@ -124,7 +124,7 @@ class BuyTroopScene extends Phaser.Scene {
                     });
                     humanBattleShip.on('pointerdown', () => {
                         if(gameState.money >= gameState.humanBattleShipStats.cost){
-                            gameState.createTroop(gameState.arena,gameState.humanBattleShipStats,0);
+                            gameState.createTroop(gameState.arena,gameState.humanBattleShipStats,0,null,null,gameState.color);
                             gameState.money -= gameState.humanBattleShipStats.cost;
                         }
                     });
@@ -137,10 +137,32 @@ class BuyTroopScene extends Phaser.Scene {
                     });
                     humanArmageddon.on('pointerdown', () => {
                         if(gameState.money >= gameState.humanArmageddonStats.cost){
-                            gameState.createTroop(gameState.arena,gameState.humanArmageddonStats,0);
+                            gameState.createTroop(gameState.arena,gameState.humanArmageddonStats,0,null,null,gameState.color);
                             gameState.money -= gameState.humanArmageddonStats.cost;
+                            
                         }
                     });
+                }
+            }
+		});
+        
+        var defense = false;
+        
+        var upgradeDefense = this.add.image(1060,585,'summonDefenseIcon').setOrigin(0,0).setInteractive();
+        upgradeDefense.setScale(50/upgradeDefense.height);
+        upgradeDefense.on('pointerover', () => {
+            if(defense == true){
+                nameAndCost.setText(`Summon Defense : MAX`);
+            }else {
+                nameAndCost.setText(`Summon Defense  $${200}`);
+            }
+		});
+        upgradeDefense.on('pointerdown', () => {
+            if(gameState.money >= 200 && defense == false){
+                defense = true;
+                gameState.money -= 200;
+                if(gameState.race == 'human'){
+                    gameState.createDefense(this,0,gameState.color,gameState.humanTurretStats);
                 }
             }
 		});
@@ -157,7 +179,7 @@ class BuyTroopScene extends Phaser.Scene {
 		});
         humanTrooper.on('pointerdown', () => {
             if(gameState.money >= gameState.humanTrooperStats.cost){
-                gameState.createTroop(gameState.arena,gameState.humanTrooperStats,0);
+                gameState.createTroop(gameState.arena,gameState.humanTrooperStats,0,null,null,gameState.color);
                 gameState.money -= gameState.humanTrooperStats.cost;
             }
 		});
@@ -170,7 +192,7 @@ class BuyTroopScene extends Phaser.Scene {
 		});
         humanSniper.on('pointerdown', () => {
             if(gameState.money >= gameState.humanSniperStats.cost){
-                gameState.createTroop(gameState.arena,gameState.humanSniperStats,0);
+                gameState.createTroop(gameState.arena,gameState.humanSniperStats,0,null,null,gameState.color);
                 gameState.money -= gameState.humanSniperStats.cost;
             }
 		});
@@ -183,7 +205,7 @@ class BuyTroopScene extends Phaser.Scene {
 		});
         humanEndoTrooper.on('pointerdown', () => {
             if(gameState.money >= gameState.humanEndoTrooperStats.cost){
-                gameState.createTroop(gameState.arena,gameState.humanEndoTrooperStats,0);
+                gameState.createTroop(gameState.arena,gameState.humanEndoTrooperStats,0,null,null,gameState.color);
                 gameState.money -= gameState.humanEndoTrooperStats.cost;
             }
 		});

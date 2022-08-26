@@ -10,10 +10,13 @@ class MenuScene extends Phaser.Scene {
         this.load.image('buildMenuButton','images/buildMenuButton.png');
         
         //Misc
+        this.load.image('spacePlatformBg','images/spacePlatformBg.png');
+        this.load.spritesheet('bloodDeath','images/bloodDeath.png',{frameWidth: 32,frameHeight:32});
         this.load.spritesheet('explosion','images/explosion.png',{frameWidth: 75,frameHeight:75});
         this.load.image('moneyIcon','images/moneyIcon.png');
         this.load.image('upgradeIncomeIcon','images/upgradeIncomeIcon.png');
         this.load.image('upgradeTierIcon','images/upgradeTierIcon.png');
+        this.load.image('summonDefenseIcon','images/summonDefenseIcon.png');
         
         //Projectiles
         this.load.image('bullet1','images/bullet1.png');
@@ -49,6 +52,17 @@ class MenuScene extends Phaser.Scene {
             //human Hq
             this.load.spritesheet('humanHq','images/humanHq.png',{frameWidth: 200,frameHeight:200});
             this.load.spritesheet('humanHqGreen','images/humanHqGreen.png',{frameWidth: 200 ,frameHeight:200});
+            //human Turret
+            this.load.spritesheet('humanTurret','images/humanTurret.png',{frameWidth: 90,frameHeight:90});
+            this.load.spritesheet('humanTurretGreen','images/humanTurretGreen.png',{frameWidth: 90,frameHeight:90});
+        
+        
+        //demon Buildings
+            //demon Hq
+            this.load.spritesheet('demonHq','images/demonHq.png',{frameWidth: 200,frameHeight:200});
+            //demon Crawler
+            this.load.spritesheet('demonCrawler','images/demonCrawler.png',{frameWidth: 40,frameHeight:30});
+        
         
         //Buy Towers Stuff
         this.load.image('buyTowersBar','images/buyTowersBar.png');
@@ -56,6 +70,68 @@ class MenuScene extends Phaser.Scene {
         
     }
     create() {
+        
+        gameState.input=this.input;
+        var scene = this;
+        const connectId = Math.ceil(Math.random()*100);
+        var peer = new Peer(connectId);
+        gameState.connection;
+        peer.on('open', function(id) {
+            console.log('My peer ID is: ' + id);
+            gameState.createTempText(scene,100,100,"ID: "+id,10000000,20);
+        });
+        var textbox = document.createElement("INPUT");
+        textbox.setAttribute("type", "text");
+        textbox.setAttribute("value", "Hello World!");
+        textbox.setAttribute("id", "peerid");
+        document.body.appendChild(textbox);
+        var b = document.createElement("INPUT");
+        b.setAttribute("type", "button");
+        b.setAttribute("value", "Connect");
+        document.body.appendChild(b);
+        b.onclick = function(){
+            if(gameState.connection){
+                
+            }else {
+                gameState.connection = peer.connect(`${document.getElementById("peerid").value}`);
+            }
+        };
+        
+        
+        peer.on('connection', x => {
+            x.on('data', data => {
+                if(data[0] == 'create'){
+                    if(data[1] == 1){
+                        console.log("MAKE");
+                        gameState.createTroop(gameState.arena,gameState.humanTrooperStats,1,gameState.mapWidth+100,data[3],'Green');
+                    } else if(data[1] == 2){
+                        gameState.createTroop(gameState.arena,gameState.humanSniperStats,1,gameState.mapWidth+100,data[3],'Green');
+                    } else if(data[1] == 3){
+                        gameState.createTroop(gameState.arena,gameState.humanEndoTrooperStats,1,gameState.mapWidth+100,data[3],'Green');
+                    } else if(data[1] == 4){
+                        gameState.createTroop(gameState.arena,gameState.humanTankStats,1,gameState.mapWidth+100,data[3],'Green');
+                    } else if(data[1] == 5){
+                        gameState.createTroop(gameState.arena,gameState.humanMechStats,1,gameState.mapWidth+100,data[3],'Green');
+                    } else if(data[1] == 6){
+                        gameState.createTroop(gameState.arena,gameState.humanFalconStats,1,gameState.mapWidth+100,data[3],'Green');
+                    } else if(data[1] == 7){
+                        gameState.createTroop(gameState.arena,gameState.humanBattleShipStats,1,gameState.mapWidth+100,data[3],'Green');
+                    } else if(data[1] == 8){
+                        gameState.createTroop(gameState.arena,gameState.humanArmageddonStats,1,gameState.mapWidth+100,data[3],'Green');
+                    }
+                }
+            })
+            x.on('open', () => {
+                console.log('open called from peer', x.peer);
+                scene.scene.start('ArenaScene');
+                if(!gameState.connection){
+                    gameState.connection = peer.connect(x.peer);
+                }
+            })
+        });
+        
+        gameState.playerTeam = 0;
+        
         this.scale.pageAlignVertically = true;
         //Misc
             // explode
@@ -63,6 +139,13 @@ class MenuScene extends Phaser.Scene {
                 key: 'explode',
                 frameRate: 10,
                 frames:this.anims.generateFrameNames('explosion',{start: 0,end: 7})
+            });
+        
+            //blood Death
+            this.anims.create({
+                key: 'bloodDeathMove',
+                frameRate: 24,
+                frames:this.anims.generateFrameNames('bloodDeath',{start: 0,end: 4})
             });
         
         
@@ -82,7 +165,53 @@ class MenuScene extends Phaser.Scene {
                     repeat: -1,
                     frames:this.anims.generateFrameNames('humanHqGreen',{start: 0,end: 1})
                 });
-                
+            //Human Turret
+            //Blue
+                this.anims.create({
+                    key: 'humanTurretIdle',
+                    frameRate: 1,
+                    frames:this.anims.generateFrameNames('humanTurret',{start: 12,end: 12})
+                });
+                this.anims.create({
+                    key: 'humanTurretMove',
+                    frameRate: 1,
+                    frames:this.anims.generateFrameNames('humanTurret',{start: 12,end: 12})
+                });
+                this.anims.create({
+                    key: 'humanTurretAttack',
+                    frameRate: 20,
+                    repeat: -1,
+                    frames:this.anims.generateFrameNames('humanTurret',{start: 12,end: 13})
+                });
+                this.anims.create({
+                    key: 'humanTurretSpawn',
+                    frameRate: 15,
+                    frames:this.anims.generateFrameNames('humanTurret',{start: 1,end: 10})
+                });
+            //Green
+                this.anims.create({
+                    key: 'humanTurretGreenIdle',
+                    frameRate: 1,
+                    repeat: -1,
+                    frames:this.anims.generateFrameNames('humanTurretGreen',{start: 12,end: 12})
+                });
+                this.anims.create({
+                    key: 'humanTurretGreenMove',
+                    frameRate: 1,
+                    repeat: -1,
+                    frames:this.anims.generateFrameNames('humanTurretGreen',{start: 12,end: 12})
+                });
+                this.anims.create({
+                    key: 'humanTurretGreenAttack',
+                    frameRate: 20,
+                    repeat: -1,
+                    frames:this.anims.generateFrameNames('humanTurretGreen',{start: 12,end: 13})
+                });
+                this.anims.create({
+                    key: 'humanTurretGreenSpawn',
+                    frameRate: 15,
+                    frames:this.anims.generateFrameNames('humanTurretGreen',{start: 1,end: 10})
+                });
         
         
             //Human Trooper
@@ -462,10 +591,44 @@ class MenuScene extends Phaser.Scene {
                 });
         
         
+        
+        //demons
+            //demon Hq
+            //Red
+                this.anims.create({
+                    key: 'demonHqMove',
+                    frameRate: 1,
+                    repeat: -1,
+                    frames:this.anims.generateFrameNames('demonHq',{start: 0,end: 1})
+                });
+            //demon Crawler
+            //Red
+                this.anims.create({
+                    key: 'demonCrawlerIdle',
+                    frameRate: 0,
+                    frames:this.anims.generateFrameNames('demonCrawler',{start: 0,end: 0})
+                });
+                this.anims.create({
+                    key: 'demonCrawlerMove',
+                    frameRate: 24,
+                    repeat: -1,
+                    frames:this.anims.generateFrameNames('demonCrawler',{start: 0,end: 5})
+                });
+                this.anims.create({
+                    key: 'demonCrawlerAttack',
+                    frameRate: 60,
+                    frames:this.anims.generateFrameNames('demonCrawler',{start: 6,end: 15})
+                });
+                this.anims.create({
+                    key: 'demonCrawlerDeath',
+                    frameRate: 0,
+                    frames:this.anims.generateFrameNames('demonCrawler',{start: 0,end: 0})
+                });
+            
+        
+        
         //var button = this.add.image(window.innerWidth/2,window.innerHeight/2,'startButton').setInteractive();
-        gameState.globalScene = this;
         gameState.input = this.input;
-        gameState.globalScene.scene.start('ArenaScene');
         /*button.on('pointerdown', function(pointer){
             
         });*/

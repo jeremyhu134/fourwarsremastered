@@ -44,14 +44,28 @@ class ArenaScene extends Phaser.Scene {
         gameState.createMap(this, 'human', 'human',null, gameState.mapWidth);
         gameState.camera = this.cameras.main;
         
+        gameState.color = '';
+        gameState.race = 'human';
         
         gameState.globalScene.scene.launch("BuyTroopScene");
-        this.time.addEvent({
-            delay: 30000,
+        /*this.time.addEvent({
+            delay: 2000,
             callback: ()=>{
-                gameState.createTroop(this,gameState.humanTrooperStats,1);
-                gameState.createTroop(this,gameState.humanTrooperStats,1);
-                gameState.createTroop(this,gameState.humanTrooperStats,1);
+                gameState.createTroop(this,gameState.demonCrawlerStats,1,null,null,'');
+                gameState.createTroop(this,gameState.demonCrawlerStats,1,null,null,'');
+                gameState.createTroop(this,gameState.demonCrawlerStats,1,null,null,'');
+            },  
+            startAt: 0,
+            timeScale: 1,
+            repeat: -1
+        });*/
+        
+        /*this.time.addEvent({
+            delay: 25000,
+            callback: ()=>{
+                gameState.createTroop(this,gameState.humanTrooperStats,1,null,null,'Green');
+                gameState.createTroop(this,gameState.humanTrooperStats,1,null,null,'Green');
+                gameState.createTroop(this,gameState.humanTrooperStats,1,null,null,'Green');
             },  
             startAt: 0,
             timeScale: 1,
@@ -60,7 +74,7 @@ class ArenaScene extends Phaser.Scene {
         this.time.addEvent({
             delay: 60000,
             callback: ()=>{
-                gameState.createTroop(this,gameState.humanEndoTrooperStats,1);
+                gameState.createTroop(this,gameState.humanEndoTrooperStats,1,null,null,'Green');
             },  
             startAt: 0,
             timeScale: 1,
@@ -69,7 +83,7 @@ class ArenaScene extends Phaser.Scene {
         this.time.addEvent({
             delay: 120000,
             callback: ()=>{
-                gameState.createTroop(this,gameState.humanMechStats,1);
+                gameState.createTroop(this,gameState.humanMechStats,1,null,null,'Green');
             },  
             startAt: 0,
             timeScale: 1,
@@ -78,7 +92,7 @@ class ArenaScene extends Phaser.Scene {
         this.time.addEvent({
             delay: 160000,
             callback: ()=>{
-                gameState.createTroop(this,gameState.humanTankStats,1);
+                gameState.createTroop(this,gameState.humanTankStats,1,null,null,'Green');
             },  
             startAt: 0,
             timeScale: 1,
@@ -87,7 +101,7 @@ class ArenaScene extends Phaser.Scene {
         this.time.addEvent({
             delay: 200000,
             callback: ()=>{
-                gameState.createTroop(this,gameState.humanBattleShipStats,1);
+                gameState.createTroop(this,gameState.humanBattleShipStats,1,null,null,'Green');
             },  
             startAt: 0,
             timeScale: 1,
@@ -96,13 +110,13 @@ class ArenaScene extends Phaser.Scene {
         this.time.addEvent({
             delay: 270000,
             callback: ()=>{
-                gameState.createTroop(this,gameState.humanArmageddonStats,1);
+                gameState.createTroop(this,gameState.humanArmageddonStats,1,null,null,'Green');
             },  
             startAt: 0,
             timeScale: 1,
             repeat: -1
         });
-       
+        */
         
         
         gameState.camera.x = 0;
